@@ -158,8 +158,45 @@ class Order extends MyBaseModel
             File::makeDirectory(dirname($pdf_file_path), 0777, true, true);
         }
 
-        PDF::setOutputMode('F'); // force to file
-        PDF::html('Public.ViewEvent.Partials.PDFTicket', $data, $pdf_file_path);
+        if ($attendees[0]['ticket']['title'] === 'Regular') {
+            PDF::setOutputMode('F'); // force to file
+            PDF::html('Public.ViewEvent.Partials.PDFTicket', $data, $file_path);
+        }
+        else {
+
+            // ---------------------------MAILCHIMP VERIFICATION.........................//
+		    $apiKey = 'f1ebc988258b73133c9c1beeb237928f-us12';
+            $listID = 'a95120ca52';
+            $your_email = $attendees[0]['order']['email'];
+
+		    // MailChimp API URL
+            $memberID = md5(strtolower($your_email));
+            $dataCenter = substr($apiKey,strpos($apiKey,'-')+1);
+            $url = 'https://' . $dataCenter . '.api.mailchimp.com/3.0/lists/' . $listID . '/members/' . $memberID;
+            // member information
+            $arr = array('email_address' => $your_email, 'status' => '');
+            $json = json_encode($arr);
+            // send a HTTP POST request with curl
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_USERPWD, 'user:' . $apiKey);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+            $result = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            $json = json_decode($result);
+            // store the status message based on response code
+            if ($json->{'status'} == 'subscribed') {
+            
+            PDF::setOutputMode('F'); // force to file
+            PDF::html('Public.ViewEvent.Partials.PDF2Ticket', $data, $file_path);
+
+            }
+        }
 
         $this->ticket_pdf_path = config('attendize.event_pdf_tickets_path') . '/' . $this->order_reference . '.pdf';
         $this->save();

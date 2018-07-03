@@ -21,7 +21,7 @@
 
             body {
                 background: url({{asset('assets/images/background.png')}}) repeat;
-                background-color: #2E3254;
+                background-color: #003dc7;
             }
 
             h2 {

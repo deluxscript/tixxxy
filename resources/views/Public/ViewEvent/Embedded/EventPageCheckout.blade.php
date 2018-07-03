@@ -2,6 +2,7 @@
 
 @section('head')
     <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+    <script type="text/javascript" src="https://js.paystack.co/v1/inline.js"></script>
 @stop
 
 @section('content')

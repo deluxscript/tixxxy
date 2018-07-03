@@ -83,11 +83,11 @@
 
         <div class="col-md-8">
 
-            <h4 style="margin-bottom: 25px;margin-top: 20px;">Event Calendar</h4>
+            <h4 style="margin-bottom: 25px;margin-top: 20px;font-weight: 600;font-size:16px">Event Calendar</h4>
                     <div id="calendar"></div>
 
 
-            <h4 style="margin-bottom: 25px;margin-top: 20px;">Upcoming Events</h4>
+            <h4 style="margin-bottom: 25px;margin-top: 20px;font-weight: 600;font-size:16px">Upcoming Events</h4>
             @if($upcoming_events->count())
                 @foreach($upcoming_events as $event)
                     @include('ManageOrganiser.Partials.EventPanel')
@@ -101,7 +101,7 @@
             @endif
         </div>
         <div class="col-md-4">
-            <h4 style="margin-bottom: 25px;margin-top: 20px;">Recent Orders</h4>
+            <h4 style="margin-bottom: 25px;margin-top: 20px;font-weight: 600;font-size:16px">Recent Orders</h4>
               @if($organiser->orders->count())
             <ul class="list-group">
                     @foreach($organiser->orders()->orderBy('created_at', 'desc')->take(5)->get() as $order)

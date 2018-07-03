@@ -140,7 +140,10 @@
                                 {!! Form::close() !!}
                             </div>
                             <div class="tab-pane " id="about">
-                                <h4>
+                                <p>
+                                    TIXY helps event planners automate their ticketing sales and check-in processes—with guest list tools to engage attendees from RSVP to check-in.
+                                </p>
+                                <!-- <h4>
                                     Version Information
                                 </h4>
                                 <p>
@@ -164,7 +167,7 @@
                                 </h4>
                                 <p>
                                     Attendize is built using many fantastic open-source libraries. You can see an overview of these on <b><a href="https://libraries.io/github/Attendize/Attendize?ref=Attendize_About_Page" target="_blank">libraries.io</a></b>.
-                                </p>
+                                </p> -->
                             </div>
                         </div>
                     </div>

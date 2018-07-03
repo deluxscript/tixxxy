@@ -1,9 +1,42 @@
+<style>
+    .ticket-bg, .ticket-bg:hover, .ticket-bg:focus, .disabled{
+        background-color: rgb(204, 53, 36);
+        border: none;
+        outline: none;
+    }
+
+    .ticket, .ticket-descripton {
+        font-size: 19px;
+        line-height: 33px;
+    }
+
+    .humane, .humane-flatty {
+        font-family: 'FuturaPTBook';
+    }
+
+    @media only screen and (max-width: 435px) {
+
+        td {
+            width: 300px !important;
+            display: block !important;
+        }
+    }
+
+    @font-face {
+        font-family: 'FuturaPTBook';
+        src: url('http://dev.tixy.ng/assets/stylesheet/icons/iconfont/fonts/FuturaPTBook.woff') format('woff'),
+            url('http://dev.tixy.ng/assets/stylesheet/icons/iconfont/fonts/FuturaPTBook.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+</style>
+
 <section id="tickets" class="container">
-    <div class="row">
+   <!--  <div class="row">
         <h1 class='section_head'>
             Tickets
         </h1>
-    </div>
+    </div> -->
 
     @if($event->start_date->isPast())
         <div class="alert alert-boring">
@@ -95,7 +128,7 @@
                                         @if(!$is_free_event)
                                             <div class="hidden-xs pull-left">
                                                 <img class=""
-                                                     src="{{asset('assets/images/public/EventPage/credit-card-logos.png')}}"/>
+                                                     src="{{asset('assets/images/public/EventPage/cards.png')}}" width="170"/>
                                                 @if($event->enable_offline_payments)
 
                                                     <div class="help-block" style="font-size: 11px;">
@@ -106,7 +139,7 @@
                                             </div>
 
                                         @endif
-                                        {!!Form::submit('Register', ['class' => 'btn btn-lg btn-primary pull-right'])!!}
+                                        {!!Form::submit('Get Ticket', ['class' => 'btn ticket-bg btn-lg btn-primary pull-right'])!!}
                                     </td>
                                 </tr>
                             </table>

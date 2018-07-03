@@ -4566,10 +4566,44 @@ function log() {
   };
 
 }).call(this);
-;$(function() {
+;
+function payWithPaystack(){
+  var pemail = document.getElementById('pemail').value;
+  var totAmt = document.getElementById('totAmt').innerHTML;
+  var Amtnum = totAmt.match(/\d/g);
+  Amtnum = Amtnum.join("");
+  var TotalAmtt = Number(Amtnum);
+  var handler = PaystackPop.setup({
+    key: 'pk_test_c31ca39214fff76ad3fa6c50e1a5bbfb3d4720a2',
+    email: pemail,
+    amount: TotalAmtt,
+    ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+    metadata: {
+       custom_fields: [
+          {
+              display_name: "Mobile Number",
+              variable_name: "mobile_number",
+              value: "+2348012345678"
+          }
+       ]
+    },
+    callback: function(response){
+      var token = response.id;
+      $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+      $form.ajaxSubmit(ajaxFormConf);
+        // alert('success. transaction ref is ' + response.reference);
+    },
+    onClose: function(){
+        alert('window closed');
+    }
+  });
+  handler.openIframe();
+}
+$(function() {
     $('form.ajax').on('submit', function(e) {
         e.preventDefault();
         e.stopImmediatePropagation();
+        $(window).scrollTop(0)
 
         var $form =
                 $(this),
@@ -4600,7 +4634,11 @@ function log() {
                    Please try again, or contact the webmaster if the problem persists.');
                     },
                     success: function(data, statusText, xhr, $form) {
+                      
                         var $submitButton = $form.find('input[type=submit]');
+                        // var dhide = document.getElementById("dimpay");
+                        // dhide.style.display = "block";
+                        // console.log('its here');
 
                         if (data.message) {
                             showMessage(data.message);
@@ -4610,9 +4648,13 @@ function log() {
 
                                 if (data.redirectUrl) {
                                     if(data.redirectData)  {
+                                      document.getElementById("dimpay").style.display = "block";
                                         $.redirectPost(data.redirectUrl, data.redirectData);
+                                        
                                     } else {
-                                        document.location.href = data.redirectUrl;
+                                      //window.location.replace(data.redirectUrl);
+                                      document.location.href = data.redirectUrl;
+                                        //console.log('redirecting1...', data.redirectUrl);
                                     }
                                 }
                                 break;
@@ -4640,60 +4682,96 @@ function log() {
         toggleSubmitDisabled($submitButton);
 
         if ($form.hasClass('payment-form') && !$('#pay_offline').is(":checked")) {
+          $('.paystack_pop').attr('onload', 'window.top.scrollTo(0,0)');
             clearFormErrors($('.payment-form'));
 
-            Stripe.setPublishableKey($form.data('stripe-pub-key'));
-
-            var
-                    noErrors = true,
-                    $cardNumber = $('.card-number'),
-                    $cardName = $('.card-name'),
-                    $cvcNumber = $('.card-cvc'),
-                    $expiryMonth = $('.card-expiry-month'),
-                    $expiryYear = $('.card-expiry-year');
-
-
-            if (!Stripe.validateCardNumber($cardNumber.val())) {
-                showFormError($cardNumber, 'The credit card number appears to be invalid.');
-                noErrors = false;
-            }
-
-            if (!Stripe.validateCVC($cvcNumber.val())) {
-                showFormError($cvcNumber, 'The CVC number appears to be invalid.');
-                noErrors = false;
-            }
-
-            if (!Stripe.validateExpiry($expiryMonth.val(), $expiryYear.val())) {
-                showFormError($expiryMonth, 'The expiration date appears to be invalid.');
-                showFormError($expiryYear, '');
-                noErrors = false;
-            }
-
-            if (noErrors) {
-                Stripe.card.createToken({
-                    name: $cardName.val(),
-                    number: $cardNumber.val(),
-                    cvc: $cvcNumber.val(),
-                    exp_month: $expiryMonth.val(),
-                    exp_year: $expiryYear.val()
-                },
-                function(status, response) {
-
-                    if (response.error) {
-                        clearFormErrors($('.payment-form'));
-                        showFormError($('*[data-stripe=' + response.error.param + ']', $('.payment-form')), response.error.message);
-                        toggleSubmitDisabled($submitButton);
-                    } else {
-                        var token = response.id;
-                        $form.append($('<input type="hidden" name="stripeToken" />').val(token));
-                        $form.ajaxSubmit(ajaxFormConf);
+            var pemail = document.getElementById('pemail').value;
+            var totAmt = document.getElementById('totAmt').innerHTML;
+            var Amtnum = totAmt.match(/\d/g);
+            Amtnum = Amtnum.join("");
+            var TotalAmtt = Number(Amtnum);
+            $(window).scrollTop(0);
+            var handler = PaystackPop.setup({
+              key: 'pk_test_c31ca39214fff76ad3fa6c50e1a5bbfb3d4720a2',
+              email: pemail,
+              amount: TotalAmtt,
+              ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+              metadata: {
+                custom_fields: [
+                    {
+                        display_name: "Mobile Number",
+                        variable_name: "mobile_number",
+                        value: "+2348012345678"
                     }
+                ]
+              },
+              callback: function(response){
+                document.getElementById("dimpay").style.display = "block";
+                //var token = response.id;
+                //$form.append($('<input type="hidden" name="stripeToken" />').val(token));
+                $form.ajaxSubmit(ajaxFormConf);
+                  // alert('success. transaction ref is ' + response.reference);
+              },
+              onClose: function(){
+                  alert('window closed');
+              }
+            });
+            handler.openIframe();
 
-                });
-            } else {
-                showMessage('Please check your card details and try again.');
-                toggleSubmitDisabled($submitButton);
-            }
+            // Stripe.setPublishableKey($form.data('stripe-pub-key'));
+
+            // var
+            //         noErrors = true,
+            //         $cardNumber = $('.card-number'),
+            //         $cardName = $('.card-name'),
+            //         $cvcNumber = $('.card-cvc'),
+            //         $expiryMonth = $('.card-expiry-month'),
+            //         $expiryYear = $('.card-expiry-year');
+
+
+            // if (!Stripe.validateCardNumber($cardNumber.val())) {
+            //     showFormError($cardNumber, 'The credit card number appears to be invalid.');
+            //     noErrors = false;
+            // }
+
+            // if (!Stripe.validateCVC($cvcNumber.val())) {
+            //     showFormError($cvcNumber, 'The CVC number appears to be invalid.');
+            //     noErrors = false;
+            // }
+
+            // if (!Stripe.validateExpiry($expiryMonth.val(), $expiryYear.val())) {
+            //     showFormError($expiryMonth, 'The expiration date appears to be invalid.');
+            //     showFormError($expiryYear, '');
+            //     noErrors = false;
+            // }
+
+            // if (noErrors) {
+            //     Stripe.card.createToken({
+            //         name: $cardName.val(),
+            //         number: $cardNumber.val(),
+            //         cvc: $cvcNumber.val(),
+            //         exp_month: $expiryMonth.val(),
+            //         exp_year: $expiryYear.val()
+            //     },
+            //     function(status, response) {
+
+            //         if (response.error) {
+            //             clearFormErrors($('.payment-form'));
+            //             showFormError($('*[data-stripe=' + response.error.param + ']', $('.payment-form')), response.error.message);
+            //             toggleSubmitDisabled($submitButton);
+            //         } else {
+            //           console.log('success1');
+            //             var token = response.id;
+            //             $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+            //             $form.ajaxSubmit(ajaxFormConf);
+            //         }
+
+            //     });
+            // } else {
+            //   console.log('success2');
+            //     showMessage('Please check your card details and try again.');
+            //     toggleSubmitDisabled($submitButton);
+            // }
 
         } else {
             $form.ajaxSubmit(ajaxFormConf);

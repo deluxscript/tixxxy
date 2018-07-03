@@ -61,6 +61,18 @@
                 color: #fff !important;
             }
 
+            @font-face {
+                font-family: 'FuturaPTBook';
+                src: url('http://dev.tixy.ng/assets/stylesheet/icons/iconfont/fonts/FuturaPTBook.woff') format('woff'),
+                    url('http://dev.tixy.ng/assets/stylesheet/icons/iconfont/fonts/FuturaPTBook.ttf') format('truetype');
+                font-weight: normal;
+                font-style: normal;
+            }
+
+            .attendize, *  {
+                font-family: 'FuturaPTBook'!important;
+            }
+
         </style>
         @if ($event->bg_type == 'color' || Input::get('bg_color_preview'))
             <style>body {background-color: {{(Input::get('bg_color_preview') ? '#'.Input::get('bg_color_preview') : $event->bg_color)}} !important; }</style>

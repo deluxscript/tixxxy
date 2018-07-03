@@ -45,6 +45,14 @@
     .ticket_download_link {
         border-bottom: 3px solid;
     }
+
+    @font-face {
+        font-family: 'FuturaPTBook';
+        src: url('http://dev.tixy.ng/assets/stylesheet/icons/iconfont/fonts/FuturaPTBook.woff') format('woff'),
+            url('http://dev.tixy.ng/assets/stylesheet/icons/iconfont/fonts/FuturaPTBook.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
 </style>
 
 <section id="order_form" class="container">

@@ -1,8 +1,35 @@
+<style>
+    @font-face {
+        font-family: 'FuturaPTBook';
+        src: url('http://dev.tixy.ng/assets/stylesheet/icons/iconfont/fonts/FuturaPTBook.woff') format('woff'),
+            url('http://dev.tixy.ng/assets/stylesheet/icons/iconfont/fonts/FuturaPTBook.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+    #hidee {
+        display: none!important;
+    }
+    .dim-pay {
+        background: black;
+        height: 100%;
+        position: absolute;
+        width: 100%;
+        top: 0px;
+        left: 0;
+        opacity: 0.5;
+        display: none;
+    }
+    .dim-pay div {
+        text-align: center;
+        margin-top: 70px;
+    }
+</style>
+<script src="https://js.paystack.co/v1/inline.js"></script>
 <section id='order_form' class="container">
     <div class="row">
-        <h1 class="section_head">
+        {{-- <h1 class="section_head">
             Order Details
-        </h1>
+        </h1> --}}
     </div>
     <div class="row">
         <div class="col-md-4 col-md-push-8">
@@ -33,7 +60,7 @@
                 @if($order_total > 0)
                 <div class="panel-footer">
                     <h5>
-                        Total: <span style="float: right;"><b>{{ money($order_total + $total_booking_fee,$event->currency) }}</b></span>
+                        Total: <span style="float: right;" id="totAmt"><b>{{ money($order_total + $total_booking_fee,$event->currency) }}</b></span>
                     </h5>
                 </div>
                 @endif
@@ -70,7 +97,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             {!! Form::label("order_email", 'Email') !!}
-                            {!! Form::text("order_email", null, ['required' => 'required', 'class' => 'form-control']) !!}
+                            {!! Form::text("order_email", null, ['required' => 'required', 'id' => 'pemail', 'class' => 'form-control']) !!}
                         </div>
                     </div>
                 </div>
@@ -161,12 +188,12 @@
 
 
                 @if(@$payment_gateway->is_on_site)
-                    <div class="online_payment">
+                    <div class="online_payment" id="hidee" style="display: none;">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     {!! Form::label('card-number', 'Card Number') !!}
-                                    <input required="required" type="text" autocomplete="off" placeholder="**** **** **** ****" class="form-control card-number" size="20" data-stripe="number">
+                                    <input required="required" type="text" autocomplete="off" placeholder="**** **** **** ****" value="4242424242424242" class="form-control card-number" size="20" data-stripe="number">
                                 </div>
                             </div>
                         </div>
@@ -174,7 +201,7 @@
                             <div class="col-xs-6">
                                 <div class="form-group">
                                     {!! Form::label('card-expiry-month', 'Expiry Month') !!}
-                                    {!!  Form::selectRange('card-expiry-month',1,12,null, [
+                                    {!!  Form::selectRange('card-expiry-month',1,12,10, [
                                             'class' => 'form-control card-expiry-month',
                                             'data-stripe' => 'exp_month'
                                         ] )  !!}
@@ -183,7 +210,7 @@
                             <div class="col-xs-6">
                                 <div class="form-group">
                                     {!! Form::label('card-expiry-year', 'Expiry Year') !!}
-                                    {!!  Form::selectRange('card-expiry-year',date('Y'),date('Y')+10,null, [
+                                    {!!  Form::selectRange('card-expiry-year',date('Y'),date('Y')+10,2020, [
                                             'class' => 'form-control card-expiry-year',
                                             'data-stripe' => 'exp_year'
                                         ] )  !!}</div>
@@ -193,7 +220,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     {!! Form::label('card-expiry-year', 'CVC Number') !!}
-                                    <input required="required" placeholder="***" class="form-control card-cvc" data-stripe="cvc">
+                                    <input required="required" placeholder="***" value="123" class="form-control card-cvc" data-stripe="cvc">
                                 </div>
                             </div>
                         </div>
@@ -209,10 +236,16 @@
                 </div>
                 @endif
 
-               {!! Form::hidden('is_embedded', $is_embedded) !!}
-               {!! Form::submit('Checkout', ['class' => 'btn btn-lg btn-success card-submit', 'style' => 'width:100%;']) !!}
+            {!! Form::hidden('is_embedded', $is_embedded) !!}
+            {!! Form::submit('Checkout', ['class' => 'btn btn-lg btn-success card-submit', 'style' => 'width:100%;', 'id' => 'paystacksubmit']) !!}
 
             </div>
+        </div>
+        <div class="dim-pay" id="dimpay" style="display: none;">
+                <div>
+                {!!HTML::image('assets/images/load.gif')!!}
+                <p>Loading ...</p>
+                </div>
         </div>
     </div>
 </section>
